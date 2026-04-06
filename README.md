@@ -1,91 +1,77 @@
-git 
-```markdown
 # Attention-Bid-Bot
 
-> **Note on Development History:** This repository is a final, refactored, and "clean" version of the bidding agent. The full development lifecycle—including extensive integration testing with the official harness, PvP bot benchmarks, and rigorous category-specific simulations—was conducted in the original development repository: [BotContest](https://github.com/boyrazcan33/BotContest). This codebase was migrated here to provide a streamlined, production-ready version for final review, which accounts for the concise commit history in this repository.
+A high-performance automated bidding agent for real-time "Attention Economy" ad auctions. The bot competes in a PvP simulation where participants bid on video advertising opportunities to maximize ROI (points earned per ebuck spent).
 
-A high-performance automated bidding agent designed for real-time "Attention Economy" ad auctions. This project implements a data-driven strategy to maximize Return on Investment (ROI) through predictive modeling, empirical analysis, and adaptive budget management.
+> **Repository Note:** This is the final, refactored version of the bidding agent. The full development lifecycle — including iterative harness testing, category benchmarking, and parameter calibration — was conducted in the original development repository: [BotContest](https://github.com/boyrazcan33/BotContest). That repository is referenced here solely for context on the development process; everything needed to evaluate and run the bot is contained in this repository.
 
-## 🧠 Strategic Approach
+## Strategic Approach
 
-### 📊 Multi-Factor Value Estimation
-The bot calculates the expected value of auction items by synthesizing multiple data points:
-- **Demographic Targeting:** Maps viewer profiles (age, gender) against content categories using multi-dimensional multiplier matrices to predict engagement probability.
-- **Interest Graph Analysis:** Cross-references viewer interest vectors with video metadata to identify high-affinity targets.
-- **Engagement Scaling:** Adjusts base values using non-linear comment-to-view ratios, ensuring bids are prioritized for high-interaction content.
+### Value Estimation
 
-### 💰 Dynamic Bidding Logic
-- **Adaptive Multipliers:** Analyzes real-time feedback from auction summaries to dynamically tune bidding aggressiveness (`globalMultiplier`).
-- **Liquidity Management:** Implements a calculated "Urgency Factor" to ensure consistent spending and compliance with minimum budget utilization thresholds (35%) without compromising efficiency.
-- **Tie-Breaker Optimization:** Utilizes calibrated entry-bid ratios to secure wins in highly competitive segments at the lowest possible cost.
+The bot estimates the expected value of each auction round by combining multiple signals from the input data:
 
-## 🛠 Technical Specifications
-- **Language:** Java 21 (LTS)
-- **Architecture:** Single-threaded, low-latency event loop
-- **Response Time:** Optimized for sub-40ms execution (averaging ~0ms in local benchmarks)
-- **Dependencies:** Zero external libraries (Pure JDK implementation)
+- **Category matching:** A cross-reference matrix scores how well the bot's advertising category aligns with the video's category. Weights were derived from observed point yields across harness runs.
+- **Viewer demographics:** Age and gender multipliers adjust the estimate based on which demographic segments historically produced higher returns for each video category.
+- **Interest alignment:** Viewer interests are weighted by relevance order (primary > secondary > tertiary) and cross-referenced against the video category.
+- **Engagement ratio:** Comment-to-view ratio serves as a proxy for viewer engagement, scaling the base value accordingly.
+- **View count brackets:** View counts are mapped to non-linear value brackets, reflecting the assignment's hint that "a niche video can be worth more per impression than a viral one."
 
-## 📦 Build & Execution
+### Bidding and Budget Management
 
-A pre-built `can-bot.jar` is included in the repository root. No build step is required to run the bot.
+- **Adaptive multiplier:** After every 100-round summary, the bot adjusts a global bid multiplier based on observed ROI — scaling down if overpaying, scaling up if too conservative.
+- **Start bid ratio:** Dynamically tuned based on consecutive win/loss streaks to optimize tie-breaking without overspending.
+- **Minimum spend enforcement:** The scoring formula penalizes spending below 30% of the budget. The bot tracks spend rate in real time and applies increasing urgency pressure as rounds progress, with a panic mode that activates if spending falls critically behind schedule.
+- **Budget conservation:** When remaining funds drop below safety thresholds (15%, 5%), bid caps are reduced proportionally to avoid early elimination.
+
+## Calibration Methodology
+
+As stated in the assignment: *"Discovering this value curve through experimentation is part of the challenge."* The weight matrices (`VIDEO_CATEGORY_MATCH`, `AGE_MUL_MALE`, `AGE_MUL_FEMALE`) and the view count brackets are not arbitrary — they were calibrated empirically through iterative testing against the provided harness. Python was used as an offline analysis tool to process harness outputs and discover the value curves; the bot itself uses only pure Java with no external dependencies, as required by the assignment:
+
+- **Category selection:** Harness test outputs were analyzed using Python scripts to identify the highest-performing categories. The top 3 candidates were then benchmarked in full-length harness runs, with "Video Games" consistently yielding the best results.
+- **Weight tuning:** Starting from uniform weights, each matrix cell was adjusted based on observed win rates and point yields across the harness runs conducted in the [BotContest](https://github.com/boyrazcan33/BotContest) repository.
+- **View brackets:** The non-monotonic value curve described in the assignment was mapped by systematically testing bid responses across different view count ranges and recording the resulting point awards.
+
+These parameters are fixed at runtime by design — pre-calibrated weights ensure sub-1ms response times and avoid the risk of overfitting to noise during the live auction.
+
+## Technical Specifications
+
+- **Language:** Java 21
+- **Architecture:** Single-threaded, event-loop based on stdin/stdout
+- **Response time:** Sub-1ms average (well within the 40ms limit)
+- **Dependencies:** None (pure JDK)
+- **Heap usage:** Well within the 192MB constraint
+
+## Build and Run
+
+A pre-built `can-bot.jar` is included in the repository root.
 
 ### Prerequisites
-- **JDK 8** or higher
-- **Git**
+- JDK 8 or higher
 
 ### Running with the Test Harness
 
-1. **Clone this repository:**
-   ```powershell
+1. Clone this repository:
+   ```
    git clone https://github.com/boyrazcan33/CBbot.git
    ```
 
-2. **Extract the harness archive.** You should have a structure like:
+2. Create a bot subdirectory in the harness directory and copy the jar:
    ```
-   playtech2026-harness\
-   └── harness.jar
-   ```
-
-3. **Create the bot subdirectory and copy the jar:**
-   ```powershell
-   mkdir C:\path\to\playtech2026-harness\can-bot
-   Copy-Item CBbot\can-bot.jar C:\path\to\playtech2026-harness\can-bot\can-bot.jar
+   mkdir /path/to/harness/can-bot
+   cp CBbot/can-bot.jar /path/to/harness/can-bot/
    ```
 
-4. **Run the harness** from the harness directory:
-   ```powershell
-   cd C:\path\to\playtech2026-harness
+3. Run the harness from its directory:
+   ```
+   cd /path/to/harness
    java -jar harness.jar
    ```
 
-5. **View the live dashboard:**
-   ```
-   http://localhost:2026
-   ```
+4. View the dashboard at `http://localhost:2026`
 
-### Building from Source (Optional)
-
-If you wish to recompile the source code:
-
-1. **Compile:**
-   ```powershell
-   javac -d . src\main\java\Main.java
-   ```
-
-2. **Package:**
-   ```powershell
-   jar cfm can-bot.jar src\main\resources\META-INF\MANIFEST.MF Main.class
-   ```
-
-3. **Run standalone:**
-   ```powershell
-   java Main 10000000
-   ```
-
-## 📈 Performance Benchmarks
+## Performance Benchmarks
 Through empirical testing and analysis in competitive environments, the agent has demonstrated:
 
 - Average ROI: ~0.55 (Value per Ebuck spent)
 - Target Accuracy: Successfully optimized for high-yield sectors, specifically the Video Games category.
 - Reliability: 100% compliance with budget utilization guardrails and time constraints.
-```
