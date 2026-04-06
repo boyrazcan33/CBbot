@@ -1,5 +1,8 @@
 # Attention-Bid-Bot
 
+> **Note on Development History:** This repository is a final, refactored, and "clean" version of the bidding agent. The full development lifecycle—including extensive integration testing with the official harness, PvP bot benchmarks, and rigorous category-specific simulations—was conducted in the original development repository: [BotContest](https://github.com/boyrazcan33/BotContest). This codebase was migrated here to provide a streamlined, production-ready version for final review,
+> which accounts for the concise commit history in this repository.
+
 A high-performance automated bidding agent designed for real-time "Attention Economy" ad auctions. This project implements a data-driven strategy to maximize Return on Investment (ROI) through predictive modeling, empirical analysis, and adaptive budget management.
 
 ## 🧠 Strategic Approach
