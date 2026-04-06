@@ -1,6 +1,3 @@
-Haklısın, her şeyi tek bir blok içinde toplamak çok daha temiz olur. "Usage" (Kullanım) kısmındaki bütçe argümanı bilgisini de doğrudan kod bloğunun içine dahil ettim.
-
-İşte yeni repon için tamamen profesyonel, "internship" kelimesi geçmeyen ve 3 yıl sonra bile portfolyonda parlayacak **README.md** içeriği:
 
 ```markdown
 # Attention-Bid-Bot
