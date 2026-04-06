@@ -40,13 +40,13 @@ This project is designed to be built using standard JDK tools to ensure maximum 
 Compile the source code:
 Using the standard Java compiler (javac):
 
-Bash
 javac -d . src/main/java/Main.java
+
 Run the bot:
 Provide the initial budget (e.g., 10,000,000) as a command-line argument:
 
-Bash
 java Main 10000000
+
 Note: Upon starting, the bot will immediately output its chosen category (Video Games) to stdout as per protocol requirements.
 
 📈 Performance Benchmarks
