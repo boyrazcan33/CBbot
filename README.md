@@ -1,7 +1,9 @@
+Haklısın, Linux kısmını koymamalıyım. Önce PowerShell komutlarını kontrol edeyim:PowerShell burada test edemiyorum, ama Windows PowerShell komutlarını bilgimden doğrulayarak vereyim. `copy` yerine PowerShell'de `Copy-Item` daha güvenli:
+
+```markdown
 # Attention-Bid-Bot
 
-> **Note on Development History:** This repository is a final, refactored, and "clean" version of the bidding agent. The full development lifecycle—including extensive integration testing with the official harness, PvP bot benchmarks, and rigorous category-specific simulations—was conducted in the original development repository: [BotContest](https://github.com/boyrazcan33/BotContest). This codebase was migrated here to provide a streamlined, production-ready version for final review,
-> which accounts for the concise commit history in this repository.
+> **Note on Development History:** This repository is a final, refactored, and "clean" version of the bidding agent. The full development lifecycle—including extensive integration testing with the official harness, PvP bot benchmarks, and rigorous category-specific simulations—was conducted in the original development repository: [BotContest](https://github.com/boyrazcan33/BotContest). This codebase was migrated here to provide a streamlined, production-ready version for final review, which accounts for the concise commit history in this repository.
 
 A high-performance automated bidding agent designed for real-time "Attention Economy" ad auctions. This project implements a data-driven strategy to maximize Return on Investment (ROI) through predictive modeling, empirical analysis, and adaptive budget management.
 
@@ -26,34 +28,65 @@ The bot calculates the expected value of auction items by synthesizing multiple 
 
 ## 📦 Build & Execution
 
-This project is designed to be built using standard JDK tools to ensure maximum compatibility across different environments.
+A pre-built `can-bot.jar` is included in the repository root. No build step is required to run the bot.
 
 ### Prerequisites
-- **JDK 21** or higher.
+- **JDK 8** or higher
+- **Git**
 
-### Step-by-Step Instructions
+### Running with the Test Harness
 
-1. **Clone the repository:**
-   ```bash
+1. **Clone this repository:**
+   ```powershell
    git clone https://github.com/boyrazcan33/CBbot.git
-   cd CBbot
-Compile the source code:
-Using the standard Java compiler (javac):
+   ```
 
-javac -d . src/main/java/Main.java
+2. **Extract the harness archive.** You should have a structure like:
+   ```
+   playtech2026-harness\
+   └── harness.jar
+   ```
 
-Run the bot:
-Provide the initial budget (e.g., 10,000,000) as a command-line argument:
+3. **Create the bot subdirectory and copy the jar:**
+   ```powershell
+   mkdir C:\path\to\playtech2026-harness\can-bot
+   Copy-Item CBbot\can-bot.jar C:\path\to\playtech2026-harness\can-bot\can-bot.jar
+   ```
 
-java Main 10000000
+4. **Run the harness** from the harness directory:
+   ```powershell
+   cd C:\path\to\playtech2026-harness
+   java -jar harness.jar
+   ```
 
-Note: Upon starting, the bot will immediately output its chosen category (Video Games) to stdout as per protocol requirements.
+5. **View the live dashboard:**
+   ```
+   http://localhost:2026
+   ```
 
-📈 Performance Benchmarks
+### Building from Source (Optional)
+
+If you wish to recompile the source code:
+
+1. **Compile:**
+   ```powershell
+   javac -d . src\main\java\Main.java
+   ```
+
+2. **Package:**
+   ```powershell
+   jar cfm can-bot.jar src\main\resources\META-INF\MANIFEST.MF Main.class
+   ```
+
+3. **Run standalone:**
+   ```powershell
+   java Main 10000000
+   ```
+
+## 📈 Performance Benchmarks
 Through empirical testing and analysis in competitive environments, the agent has demonstrated:
 
-Average ROI: ~0.55 (Value per Ebuck spent)
-
-Target Accuracy: Successfully optimized for high-yield sectors, specifically the Video Games category.
-
-Reliability: 100% compliance with budget utilization guardrails and time constraints.
+- Average ROI: ~0.55 (Value per Ebuck spent)
+- Target Accuracy: Successfully optimized for high-yield sectors, specifically the Video Games category.
+- Reliability: 100% compliance with budget utilization guardrails and time constraints.
+```
