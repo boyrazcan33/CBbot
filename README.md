@@ -1,5 +1,4 @@
-Haklısın, Linux kısmını koymamalıyım. Önce PowerShell komutlarını kontrol edeyim:PowerShell burada test edemiyorum, ama Windows PowerShell komutlarını bilgimden doğrulayarak vereyim. `copy` yerine PowerShell'de `Copy-Item` daha güvenli:
-
+git 
 ```markdown
 # Attention-Bid-Bot
 
