@@ -35,7 +35,7 @@ This project is designed to be built using standard JDK tools to ensure maximum 
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/boyrazcan33/CBbot.git](https://github.com/boyrazcan33/CBbot.git)
+   git clone https://github.com/boyrazcan33/CBbot.git
    cd CBbot
 Compile the source code:
 Using the standard Java compiler (javac):
